@@ -1,5 +1,5 @@
 """
-Look the pressure recovery for a symmetrical annular diffuser
+Look at the pressure recovery for a symmetrical annular diffuser
 using data from ESDU 75026 and compare to an ideal diffuser
 """
 import sys
