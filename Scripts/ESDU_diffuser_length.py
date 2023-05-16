@@ -13,13 +13,13 @@ plt.rcParams.update({"font.size": 20})
 
 # Data for area ratio and optimum pressure recovery
 # from EDSU
-A2_A1 = esdu.Cpr2_data_symmetrical["A2/A1"]
-L_h1 = esdu.Cpr2_data_symmetrical["L/h1"]
+A2_A1 = esdu.Cpr2_data_symmetrical["A2/A1"].to_numpy()
+L_h1 = esdu.Cpr2_data_symmetrical["L/h1"].to_numpy()
 
-poly_fit = np.polynomial.Polynomial.fit(A2_A1, L_h1, deg=2)
+poly_fit = np.polynomial.polynomial.Polynomial.fit(A2_A1, L_h1, deg=2)
 fit_x = np.linspace(1.1, 3.5, 100)
 fit_y = poly_fit(fit_x)
-a, b, c = poly_fit.coef
+a, b, c = poly_fit.convert().coef
 fit_str = fr"$ {a:.3g} + {b:.3g}x + {c:.3g}x^2 $"
 
 # Plot results
