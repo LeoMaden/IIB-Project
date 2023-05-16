@@ -35,7 +35,7 @@ plt.plot(A2_A1, Cpr_opt, marker="x", label="ESDU")
 plt.plot(fit_x, fit_y, label=f"Fit: {fit_str}")
 
 plt.xlabel(r"$ \dfrac{A_2}{A_1} $")
-plt.ylabel(r"$ C_{pr}^{**} $")
+plt.ylabel(r"$ C_{pr}^{**} $", rotation=0, labelpad=20)
 plt.legend()
 plt.grid()
 plt.tight_layout()
