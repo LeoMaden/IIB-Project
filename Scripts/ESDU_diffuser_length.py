@@ -20,7 +20,7 @@ L_h1 = esdu.Cpr2_data_symmetrical["L/h1"]
 plt.figure(figsize=(10, 8))
 plt.plot(sigma, L_h1, marker="x")
 
-plt.xlabel(r"$ \sigma $")
+plt.xlabel(r"$ \dfrac{A_2}{A_1} $")
 plt.ylabel(r"$ \dfrac{L}{h_1} $", rotation=0, labelpad=20)
 plt.grid()
 plt.tight_layout()

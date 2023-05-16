@@ -25,7 +25,7 @@ plt.figure(figsize=(10, 8))
 plt.plot(sigma_ideal, Cpr_opt_ideal, label="Ideal")
 plt.plot(sigma, Cpr_opt, marker="x", label="ESDU")
 
-plt.xlabel(r"$ \sigma $")
+plt.xlabel(r"$ \dfrac{A_2}{A_1} $")
 plt.ylabel(r"$ C_{pr}^{**} $")
 plt.legend()
 plt.grid()
