@@ -91,7 +91,7 @@ def parse_mat(data):
 
     return s_dict
 
-def load_data(file_paths):
+def load_data(file_paths) -> list[ExpData]:
     e_runs = []
 
     for i, path in enumerate(file_paths):
