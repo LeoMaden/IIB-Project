@@ -192,8 +192,6 @@ class NonDimensionalGeometry:
             Lh_diffuser=0.3,    
             Lh_rotor=0.2,     
             Lh_intake=0.1,   
-            sc_rotor=5,  
-            sc_stator=5,     
             rr_hub_tip=0.15, 
             th_cowl=0.3,
             tc_rotor=0.1,
@@ -202,7 +200,9 @@ class NonDimensionalGeometry:
             phi_o=20,
             cL_rotor=0.9,
             cL_stator=0.6,
-            delta_oh=0.02
+            delta_oh=0.02,
+            N_rotor=6,
+            N_stator=7
         )
 
 # @dataclass
