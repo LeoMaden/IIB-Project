@@ -3,7 +3,7 @@ import geometry
 
 
 @dataclass
-class NonDimensionalMassParams:
+class NonDimensionalPropulsorMassParams:
     C_E_bat: float
     cowl_density: float
     hub_density: float
@@ -15,7 +15,7 @@ class NonDimensionalMassParams:
 
 @dataclass
 class NonDimensionalMassModel:
-    mass_params: NonDimensionalMassParams
+    mass_params: NonDimensionalPropulsorMassParams
     geom: geometry.NonDimensionalGeometry
 
     def calc_M_rotor(self):
@@ -31,20 +31,7 @@ class NonDimensionalMassModel:
     def calc_M_cowl(self, xr_cas, xr_cowl):
         Vh3_cowl = self.geom.calc_Vh3_cowl(xr_cas, xr_cowl)
         return self.mass_params.cowl_solidity * self.mass_params.cowl_density * Vh3_cowl * self.geom.A3D_hr3**(-1)
+    
 
-# @dataclass
-# class MassParameters:
-#     cowl_density: float
-#     cowl_solidity: float
-#     hub_density: float
-#     hub_solidity: float
-#     rotor_density: float
-#     stator_density: float
-
-#     payload_mass: float
-#     battery_energy_density: float # J/kg
-#     battery_capacity: float # J
-
-#     @property
-#     def battery_mass(self):
-#         return self.battery_energy_density * self.battery_capacity
+    def calc_W_bat(self):
+        pass

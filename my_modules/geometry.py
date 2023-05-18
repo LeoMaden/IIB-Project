@@ -8,8 +8,6 @@ class NonDimensionalGeometry:
     Lh_diffuser:    float   # Diffuser length/rotor height
     Lh_rotor:       float   # Rotor length/rotor height
     Lh_intake:      float   # Intake length/rotor height
-    sc_rotor:       float   # Rotor pitch to chord ratio
-    sc_stator:      float   # Stator pitch to chord ratio
     rr_hub_tip:     float   # Hub to tip ratio 
     th_cowl:        float   # Cowl thickness to rotor height ratio
     tc_rotor:       float   # Rotor thickness to chord ratio
@@ -19,6 +17,8 @@ class NonDimensionalGeometry:
     cL_rotor:       float
     cL_stator:      float
     delta_oh:       float   # Ratio of delta_o to rotor height
+    N_rotor:        float   # Number of rotor blades
+    N_stator:       float   # Number of stator blades
 
     @property
     def Rh_hub(self):
@@ -39,20 +39,6 @@ class NonDimensionalGeometry:
     @property
     def Lh_total(self):
         return self.Lh_intake + self.Lh_rotor + self.Lh_diffuser
-    
-    @property
-    def N_rotor(self):
-        circum = 2 * np.pi * self.Rh_mean
-        sh_rotor = self.sc_rotor * self.cL_rotor * self.Lh_rotor
-        N = circum / sh_rotor
-        return round(N)
-    
-    @property
-    def N_stator(self):
-        circum = 2 * np.pi * self.Rh_mean
-        sh_stator = self.sc_stator * self.cL_stator * self.Lh_stator
-        N = circum / sh_stator
-        return round(N)
     
     @property
     def A3D_hr3(self):
