@@ -2,10 +2,7 @@
 Look at the pressure recovery for a symmetrical annular diffuser
 using data from ESDU 75026 and compare to an ideal diffuser
 """
-import sys
-sys.path.append("./Modules")
-
-import esdu_75026 as esdu
+from modules import esdu_75026 as esdu
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize

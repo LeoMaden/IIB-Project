@@ -2,10 +2,7 @@
 Look at how the diffuser length for optimum pressure recovery
 changes as the area ratio is increased 
 """
-import sys
-sys.path.append("./Modules")
-
-import esdu_75026 as esdu
+from modules import esdu_75026 as esdu
 import numpy as np
 import matplotlib.pyplot as plt
 
