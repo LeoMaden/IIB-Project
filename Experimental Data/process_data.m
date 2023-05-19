@@ -89,7 +89,7 @@ end
 load_calib = e.calib.load;
 
 V_long_avg = mean(e.raw.V_long, 4);
-V_lat_avg = mean(e.raw.V_long, 4);
+V_lat_avg = mean(e.raw.V_lat, 4);
 
 F_long = load_calib(1, 1) * V_long_avg + load_calib(1, 2);
 F_lat = load_calib(2, 1) * V_lat_avg + load_calib(2, 2);
