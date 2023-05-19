@@ -1,7 +1,7 @@
 % Sampling rate for calculating shaft frequency
 f_sample = 80000;
 
-filename = "run2";
+filename = "run3";
 
 data = load(filename + ".mat");
 e = data.e;
@@ -66,6 +66,16 @@ for i = 1:length(aoa)
 
             f = f_sample * (0:(L/2))/L;
             [~, i_peak] = max(P1);
+
+            % First peak above minimum prominence 
+            [pks, locs] = findpeaks(P1, "MinPeakHeight", 0.2);
+            if length(locs) == 0
+                i_peak = 1;
+            else
+                %[~, i_max_peak] = max(pks);
+                i_peak = locs(1);
+            end
+
             f_shaft(i, j, k) = f(i_peak);
 
 %             figure;
@@ -102,6 +112,7 @@ e_new.tunnel_switch = tunnel_switch;
 e_new.pwm_speed = pwm_speed;
 
 %% Save e_new into new file as e
+e_old = e;
 e = e_new;
 save(filename + "_processed.mat", "e");
 
