@@ -19,7 +19,7 @@ cbar.ax.set_ylabel("$ C_{pr} $", rotation=0)
 cbar.add_lines(CS2)
 ax.set_aspect("equal")
 ax.text(0.03, 0.036, "Suction surface", rotation=52, verticalalignment="bottom", rotation_mode="anchor")
-ax.set(xlabel="$x$", ylabel="$y$")
+ax.set(xlabel="$y$", ylabel="$z$")
 ax.text(0.02, 0.08, "$ \overline{C_{pr}} = " + str(-0.1895) + "$", bbox={"color": "grey"})
 
 fig.savefig("Figures/Passage_diffuser_Cpr_contour.pdf")
