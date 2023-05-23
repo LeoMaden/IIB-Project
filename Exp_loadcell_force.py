@@ -31,6 +31,8 @@ for run in data:
     fig1, axs1 = plt.subplots(nrows=1, ncols=2, figsize=(14, 8), sharey="all", sharex="all")
     fig2, ax2 = plt.subplots(figsize=(10, 8))
     fig3, axs3 = plt.subplots(nrows=1, ncols=2, figsize=(14, 8), sharey="all", sharex="all")
+    fig4, ax4 = plt.subplots(figsize=(10, 8))
+    fig5, axs5 = plt.subplots(nrows=1, ncols=2, figsize=(14, 8), sharey="all", sharex="all")
 
     for i, alpha_i in enumerate(alpha):
         cos_alpha_i = np.cos(np.deg2rad(alpha_i))
@@ -67,7 +69,7 @@ for run in data:
 
         color = list(mcolors.TABLEAU_COLORS.keys())[i]
 
-        # Plot C_Fx and C_Fy vs J for all alpha
+        # --- Fig 1: Experiment C_Fx and C_Fy with quadratic fit lines vs J ---
         axs1[0].set_title("$ C_{F_x} $")
         axs1[0].plot(J_i_flat, C_Fx_i_flat, 'x', color=color, label=alpha_i)
         axs1[0].plot(J_i_linspace, C_Fx_i_fit, '-', color=color)
@@ -79,82 +81,51 @@ for run in data:
         for ax in axs1:
             ax.set_xlabel("$ J $")
 
-        # Plot C_F vs J for all alpha
+        # --- Fig 2: Experiment C_F with quadratic fit lines vs J ---
         ax2.plot(J_i_flat, C_F_i_flat, 'x', color=color, label=alpha_i)
         ax2.plot(J_i_linspace, C_F_i_fit, '-', color=color)
 
-        # Model evaluation
+        # --- Model evaluation ---
         phi = 0.6
         sigma = 1.3
+        Mb_model = 0.05
+        gam = 1.4
 
         C_Tx_model = phi * (phi / sigma * sin_alpha_i - J_i_linspace)
         C_Ty_model = np.ones_like(J_i_linspace) * phi**2 / sigma * cos_alpha_i
+        C_T_model = C_Ty_model * cos_alpha_i + C_Tx_model * sin_alpha_i
 
-        #axs3[0].set_title("$ C_{F_x} $")
-        axs3[0].plot(J_i_linspace, (C_Tx_model - C_Fx_i_fit) / J_i_linspace**0, '-', color=color, label=alpha_i)
-        # axs3[0].plot(J_i_linspace, C_Tx_model, '-', color=color, label=alpha_i)
-        # axs3[0].plot(J_i_linspace, C_Fx_i_fit, '--', color=color)
+        # --- Fig 3: Model C_Tx and C_Ty and experiment C_Fx and C_Fy vs J ---
+        axs3[0].plot(J_i_linspace, C_Tx_model, '-', color=color, label=alpha_i)
+        axs3[0].plot(J_i_linspace, C_Fx_i_fit, '--', color=color)
 
-        #axs3[1].set_title("$ C_{F_y} $")        
-        axs3[1].plot(J_i_linspace, (C_Ty_model - C_Fy_i_fit) / J_i_linspace**0, '-', color=color, label=alpha_i)
-        # axs3[1].plot(J_i_linspace, C_Ty_model, '-', color=color, label=alpha_i)
-        # axs3[1].plot(J_i_linspace, C_Fy_i_fit, '--', color=color)
+        axs3[1].plot(J_i_linspace, C_Ty_model, '-', color=color, label=alpha_i)
+        axs3[1].plot(J_i_linspace, C_Fy_i_fit, '--', color=color)
 
-        for ax in axs3:
-            ax.set_ylim(-2, 7)
+        # --- Fig 4: Model C_T and experiment C_F vs J ---
+        ax4.plot(J_i_linspace, C_T_model, '-', color=color, label=alpha_i)
+        ax4.plot(J_i_linspace, C_F_i_fit, '--', color=color)
 
+        # --- Fig 5: Difference between model C_Ti and experiment C_Fi ---
+        C_Fx_i_trunc_fit = C_Fx_i_fit_func.convert().cutdeg(1)(J_i_linspace)
+        C_Fy_i_trunc_fit = C_Fy_i_fit_func.convert().cutdeg(1)(J_i_linspace)
 
-        # fig.suptitle(fr"$ \alpha = $ {alpha[i]}")
+        # axs5[0].plot(J_i_linspace, C_Fx_i_fit, '--', color=color, label=alpha_i)
+        axs5[0].plot(J_i_linspace, C_Fx_i_trunc_fit, '--', color=color, label=alpha_i)
+        axs5[0].plot(J_i_linspace, C_Tx_model, '-', color=color, label=alpha_i)
 
-        # axs[0].plot(J_i, C_Fx_i, "x")
-        # axs[0].set_title("$ C_{F_x} $")
+        # axs5[1].plot(J_i_linspace, C_Fy_i_fit, '--', color=color, label=alpha_i)
+        axs5[1].plot(J_i_linspace, C_Fy_i_trunc_fit, '--', color=color, label=alpha_i)
+        axs5[1].plot(J_i_linspace, C_Ty_model, '-', color=color, label=alpha_i)
 
-        # axs[1].plot(J_i, C_Fy_i, "x")
-        # axs[1].set_title("$ C_{F_y} $")
+        # axs5[0].plot(J_i_linspace, C_Fx_i_fit - C_Tx_model, '-', color=color, label=alpha_i)
+        # axs5[1].plot(J_i_linspace, C_Fy_i_fit - C_Ty_model, '-', color=color, label=alpha_i)
 
-        # for ax in axs:
-        #     ax.legend(run.tunnel_switch)
-        #     ax.set_xlabel("$ J $")
-
-    # # --- C_T vs alpha for J=0 (tunnel off) ---
-    # C_Fx_off = C_Fx[:, 0, :]
-    # C_Fy_off = C_Fy[:, 0, :]
-
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(14, 8), sharey="all", sharex="all")
-
-    # fig.suptitle(r"Tunnel off ($J=0$)")
-
-    # axs[0].plot(alpha, C_Fx_off, "x")
-    # axs[0].set_title("$ C_{F_x} $")
-
-    # axs[1].plot(alpha, C_Fx_off, "x")
-    # axs[1].set_title("$ C_{F_y} $")
-    
-    # Model evaluation
-    # phi = 0.6
-    # sigma = 1.3
-    # min_J = np.ma.masked_invalid(J_i).min()
-    # max_J = np.ma.masked_invalid(J_i).max()
-    # J_model = np.linspace(min_J, max_J, 100)
-    # sin_alpha = np.sin(np.deg2rad(alpha[i]))
-    # cos_alpha = np.cos(np.deg2rad(alpha[i]))
-
-    # A = phi * (phi / sigma * sin_alpha - J_model)
-    # C_Tx_model = A
-
-    # C = np.ones_like(J_model) * phi**2 / sigma * cos_alpha
-    # C_Ty_model = C
-
-    # axs[0].plot(J_model, C_Tx_model)
-    # axs[1].plot(J_model, C_Ty_model)
-
-    
-
-    # Plot all angles on same graph
 
 axs1[0].legend()
 axs1[1].legend()
 ax2.legend()
 axs3[0].legend()
 axs3[1].legend()
+ax4.legend()
 plt.show()
