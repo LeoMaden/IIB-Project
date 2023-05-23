@@ -50,7 +50,7 @@ class NonDimensionalGeometry:
     def calc_Vh3_stator(self):
         tan_phi_i = np.tan(np.deg2rad(self.phi_i))
         tan_phi_o = np.tan(np.deg2rad(self.phi_o))
-        x = 1 + self.Lh_diffuser * (tan_phi_i + tan_phi_o)
+        x = 1 + 0.5 * self.Lh_diffuser * (tan_phi_i + tan_phi_o)
         return self.tc_stator * self.cL_stator**2 * self.Lh_diffuser**2 * x * self.N_stator
 
     def calc_Vh3_hub(self, xr_hub):

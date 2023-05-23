@@ -14,6 +14,11 @@ def optimum_Cpr2_symmetrical(A2_A1):
 
     return Cpr2, L_h1
 
+def calc_phi(A2_A1, L_h1):
+    tan_phi = (A2_A1 - 1) / (2 * L_h1)
+    phi = np.rad2deg(np.arctan(tan_phi))
+    return phi
+
 
 # Load data
 #Cpr1_data_symmetrical = pd.read_csv("ESDU Data/Cpr*_fig3.csv", header=0)

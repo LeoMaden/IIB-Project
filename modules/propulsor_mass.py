@@ -1,21 +1,20 @@
 from dataclasses import dataclass
-import geometry
+from . import geometry
 
 
 @dataclass
-class NonDimensionalPropulsorMassParams:
-    C_E_bat: float
+class NonDimensionalMassParams:
     cowl_density: float
     hub_density: float
     rotor_density: float
     stator_density: float
     cowl_solidity: float
     hub_solidity: float
-    M_bat: float
 
 @dataclass
 class NonDimensionalMassModel:
-    mass_params: NonDimensionalPropulsorMassParams
+
+    mass_params: NonDimensionalMassParams
     geom: geometry.NonDimensionalGeometry
 
     def calc_M_rotor(self):
