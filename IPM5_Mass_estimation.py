@@ -18,7 +18,7 @@ Rh = splines[0]["xr_hub"].item()[0, 1]
 hr = Rc - Rh
 D = 2 * Rc
 A3 = np.pi * (Rc**2 - Rh**2)
-IPM5_mass = 2      # Actual IPM5 mass in kg
+IPM5_mass = 1.314      # Actual IPM5 mass in kg
 
 # Plots
 fig1, ax1 = plt.subplots(figsize=(10, 8))
@@ -89,7 +89,7 @@ mass_params = propulsor_mass.NonDimensionalMassParams(
     rotor_density       =   rho_al / rho_air,
     stator_density      =   rho_resin / rho_air,
     cowl_solidity       =   0.2,
-    hub_solidity        =   0.5
+    hub_solidity        =   0.35
 )
 
 # Calculate nondimensional mass
@@ -117,14 +117,16 @@ ax2.bar("Model", rotor_mass, label='Rotor')
 ax2.bar("Model", stator_mass, bottom=rotor_mass, label='Stator')
 ax2.bar("Model", hub_mass, bottom=rotor_mass+stator_mass, label='Hub')
 ax2.bar("Model", cowl_mass, bottom=rotor_mass+stator_mass+hub_mass, label='Cowl')
+ax2.text("Model", total_mass+0.02, f"{total_mass:.3f}", ha='center')
 
 ax2.bar("Actual", IPM5_mass, color='grey')
+ax2.text("Actual", IPM5_mass+0.02, f"{IPM5_mass:.3f}", ha='center')
 
 ax2.legend(bbox_to_anchor=(0, 1.001, 1, 0.1), loc='lower left', ncol=4, mode="expand")
 ax2.set_ylabel("Mass (kg)")
 ax2.yaxis.set_major_locator(MultipleLocator(0.5))
 ax2.yaxis.set_minor_locator(MultipleLocator(0.1))
-fig2.tight_layout()
+fig2.set_constrained_layout(True)
 
 fig1.savefig("Figures/IPM5_Model_vs_actual_geom.pdf")
 fig2.savefig("Figures/IPM5_Model_vs_actual_mass.pdf")
