@@ -14,7 +14,7 @@ sigma = np.array([
     [1,     1.2],
     [1.1,   1.3],
 ])
-length_factor = 1
+length_factor = 0.2
 
 
 nrows, ncols = sigma.shape
@@ -56,7 +56,8 @@ for i in range(nrows):
         for c in curves:
             axs[i, j].plot(c[0, :], c[1, :], 'r-')
 
-        axs[i, j].set_title(fr"$ \sigma = {sigma_ij} $")
+        L_D = geom.Lh_total / (2 * geom.Rh_cas)
+        axs[i, j].set_title(fr"$ \sigma = {sigma_ij} $, $ L/D = {L_D:.2f}$")
         axs[i, j].set_aspect('equal')
         axs[i, j].grid('major')
 
