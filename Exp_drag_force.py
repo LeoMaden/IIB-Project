@@ -38,8 +38,8 @@ for run in data:
 
     ReD = rho * V * D / mu
 
-    C_Dx = -F_x / (0.5 * rho * V**2)
-    C_Dy = -F_y / (0.5 * rho * V**2)
+    C_Dx = -F_x / (0.5 * rho * A3 * V**2)
+    C_Dy = -F_y / (0.5 * rho * A3 * V**2)
 
     alpha = run.aoa
 
@@ -59,6 +59,7 @@ for run in data:
         xfit_func = lambda x, a, b: a / x + b / np.sqrt(x)
         yfit_func = lambda x, a, b: a / x + b / np.sqrt(x)
 
+
         # C_Dx_i_fit_func = np.polynomial.Polynomial.fit(ReD_i, C_Dx_i, deg=2)
         # C_Dy_i_fit_func = np.polynomial.Polynomial.fit(ReD_i, C_Dy_i, deg=2)
 
@@ -73,11 +74,11 @@ for run in data:
 
         color = colors[i]
 
-        axs1[0].plot(ReD_i, C_Dx_i, 'x', color=color)
-        axs1[0].plot(ReD_i_fit, C_Dx_i_fit, '-', color=color, label=alpha_i)
+        axs1[0].semilogx(ReD_i, C_Dx_i, 'x', color=color)
+        axs1[0].semilogx(ReD_i_fit, C_Dx_i_fit, '-', color=color, label=alpha_i)
 
-        axs1[1].plot(ReD_i, C_Dy_i, 'x', color=color)
-        axs1[1].plot(ReD_i_fit, C_Dy_i_fit, '-', color=color, label=alpha_i)
+        axs1[1].semilogx(ReD_i, C_Dy_i, 'x', color=color)
+        axs1[1].semilogx(ReD_i_fit, C_Dy_i_fit, '-', color=color, label=alpha_i)
 
         leg_labels1.append(f"{alpha_i}°")
         leg_handles1.append(mlines.Line2D([], [], marker='x', linestyle='-', color=color))
@@ -85,9 +86,18 @@ for run in data:
 
     axs1[0].set_title(r"$ C_{D_x} $")
     axs1[1].set_title(r"$ C_{D_y} $")
-    axs1[1].xaxis.get_major_formatter().set_powerlimits((0, 3))
-    axs1[1].xaxis.get_major_formatter().set_scientific(True)
-    axs1[1].xaxis.get_major_formatter().set_useMathText(True)
+
+    for ax in axs1:
+        ax.tick_params('x', which='both', labelrotation=45)
+        ax.xaxis.set_major_locator(mticker.MultipleLocator(1e5))
+        ax.xaxis.set_minor_locator(mticker.MultipleLocator(1e4))
+        ax.xaxis.set_minor_formatter("")
+        ax.grid('major')
+    # axs1[1].xaxis.set_major_locator(mticker.MultipleLocator(1e5))
+    # axs1[1].xaxis.set_major_formatter("")
+    #axs1[1].xaxis.get_major_formatter().set_powerlimits((0, 3))
+    #axs1[1].xaxis.get_major_formatter().set_scientific(True)
+    #axs1[1].xaxis.get_major_formatter().set_useMathText(True)
 
     for ax in axs1:
         ax.set_xlabel("$ Re_D $")
@@ -130,12 +140,13 @@ for run in data:
     # axs2[1].plot(alpha_linspace, C_Dy_spline, '-', color='tab:blue')
 
     for ax in axs2:
-        ax.set_xlabel(r"$ \alpha $")
-        ax.legend(title='Mean $ Re $', labels=leg_labels2)
+        ax.set_xlabel(r"$ \alpha $ (deg)")
+        ax.grid('major')
+    axs2[1].legend(title='Mean $ Re $', labels=leg_labels2)
 
 
 
-fig1.tight_layout()
+fig1.set_constrained_layout(True)
 fig2.tight_layout()
 
 fig1.savefig("Figures/Exp_drag_coef_vs_ReD.pdf")
