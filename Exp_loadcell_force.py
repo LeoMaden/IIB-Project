@@ -3,6 +3,7 @@ import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize
+from modules import aero_model
 
 from modules import experimental
 
@@ -127,6 +128,30 @@ for run in data:
 
     ax2.plot(alpha[:-1], J_zero_C_Tx, 'x-')
 
+    # Model: Find J from x equation
+    phi = 0.6
+    sigma = 1.3
+    L_D = 0.35
+    hub_tip = 0.3
+
+    _alpha = np.linspace(0, 50, 51)
+    J_model = []
+
+    for i, alpha_i in enumerate(_alpha):
+        C_Tx_func = lambda J: aero_model.calc_C_thrust_x(phi, sigma, alpha_i, J)
+        C_Dx = aero_model.calc_C_drag_x(alpha_i, L_D, hub_tip)
+        f = lambda J: C_Tx_func(J) - C_Dx * J**2/2
+
+        sol = scipy.optimize.root_scalar(f, bracket=(0, 20))
+        # sol = scipy.optimize.root_scalar(f, x0=1, method='newton', fprime=fprime)
+        J = sol.root
+        J_model.append(J)
+
+
+    ax2.plot(_alpha, J_model, '-')
+
+    
+
 
     # --- Figure 3: 
     C_Fy_zero_C_Tx = np.zeros(len(alpha[:-1]))
@@ -140,9 +165,16 @@ for run in data:
 
         C_Fy_zero_C_Tx[i] = fit_func(J_i_zero_C_Tx, *fit_params_i)
 
+
     ax3.plot(alpha[:-1], C_Fy_zero_C_Tx, 'x-')
 
 
+    # Model C_Fy
+    C_Dy = aero_model.calc_C_drag_y(_alpha)
+
+    C_Fy_model = phi**2 / sigma * np.cos(np.deg2rad(_alpha)) - J**2/2 * C_Dy
+
+    ax3.plot(_alpha, C_Fy_model, '-')
 
         # # --- Fig 2: Experiment C_F with quadratic fit lines vs J ---
         # ax2.plot(J_i_flat, C_F_i_flat, 'x', color=color, label=alpha_i)
@@ -192,6 +224,7 @@ for ax in axs1:
 
 axs1[1].legend(labels=labels1, handles=handles1, title=r"$ \alpha $")
 
+fig1.set_constrained_layout(True)
 fig1.savefig("Figures/Exp_LiftFan_xy_forces.pdf")
 
 # Figure 2 properties
@@ -199,7 +232,9 @@ ax2.set_title(r"$ C_{F_x} = 0 $")
 ax2.set_xlabel(r"$ \alpha $ (deg)")
 ax2.set_ylabel(r"$ J $ ", rotation=0, labelpad=20)
 ax2.grid('major')
+ax2.legend(["Data", "Model"])
 
+fig2.set_constrained_layout(True)
 fig2.savefig("Figures/Exp_LiftFan_alpha_J_zero_x_force.pdf")
 
 
@@ -208,7 +243,9 @@ ax3.set_title(r"$ C_{F_x} = 0 $")
 ax3.set_xlabel(r"$ \alpha $ (deg)")
 ax3.set_ylabel(r"$ C_{F_y} $", rotation=0, labelpad=20)
 ax3.grid('major')
+ax3.legend(["Data", "Model"])
 
+fig3.set_constrained_layout(True)
 fig3.savefig("Figures/Exp_LiftFan_alpha_C_Ty_zero_x_force.pdf")
 
 
