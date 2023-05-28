@@ -31,6 +31,14 @@ class NonDimensionalMassModel:
         Vh3_cowl = self.geom.calc_Vh3_cowl(xr_cas, xr_cowl)
         return self.mass_params.cowl_solidity * self.mass_params.cowl_density * Vh3_cowl * self.geom.A3D_hr3**(-1)
     
+    def calc_M_total(self):
+        xr_hub = self.geom.calc_hub_line()
+        xr_cas = self.geom.calc_cas_line()
+        xr_cowl = self.geom.calc_cowl_line()
 
-    def calc_W_bat(self):
-        pass
+        M_rotor = self.calc_M_rotor()
+        M_stator = self.calc_M_stator()
+        M_hub = self.calc_M_hub(xr_hub)
+        M_cowl = self.calc_M_cowl(xr_cas, xr_cowl)
+
+        return M_rotor + M_stator + M_hub + M_cowl
