@@ -21,11 +21,11 @@ for run in data:
     i_fan_off = list(run.pwm_speed).index(0)
     i_tunnel_on = (run.tunnel_switch != 0)
 
-    P_static = run.P_static[:, i_tunnel_on, i_fan_off]
-    P_total = run.P_total[:, i_tunnel_on, i_fan_off]
+    P_static = run.P_static[:-1, i_tunnel_on, i_fan_off]
+    P_total = run.P_total[:-1, i_tunnel_on, i_fan_off]
 
-    F_x = run.F_long[:, i_tunnel_on, i_fan_off]
-    F_y = run.F_lat[:, i_tunnel_on, i_fan_off]
+    F_x = run.F_long[:-1, i_tunnel_on, i_fan_off]
+    F_y = run.F_lat[:-1, i_tunnel_on, i_fan_off]
 
     R = 287
     mu = 1.81e-5
@@ -41,7 +41,7 @@ for run in data:
     C_Dx = -F_x / (0.5 * rho * A3 * V**2)
     C_Dy = -F_y / (0.5 * rho * A3 * V**2)
 
-    alpha = run.aoa
+    alpha = run.aoa[:-1]
 
     colors = list(mcolors.TABLEAU_COLORS.keys())
     leg_handles1 = []
@@ -139,15 +139,45 @@ for run in data:
     axs2[1].plot(alpha, C_Dy_min_ReD, 'x-', color='tab:orange')
     # axs2[1].plot(alpha_linspace, C_Dy_spline, '-', color='tab:blue')
 
+    # Model
+    alpha_linspace = np.linspace(0, 50, 100)
+
+    sin_alpha_linspace = np.sin(np.deg2rad(alpha_linspace))
+    cos_alpha_linspace = np.cos(np.deg2rad(alpha_linspace))
+    D = 0.212
+    hub_tip = 0.3
+    Rc = D/2
+    Rh = hub_tip * Rc
+    Rmean = (Rc + Rh) / 2
+    L_D = 0.35
+    A3 = np.pi * (Rc**2 - Rh**2)
+
+    f = 1.28
+    C_Dx_model = f * D**2 / A3 * (0.25 * np.pi * sin_alpha_linspace + L_D * cos_alpha_linspace)
+
+    # model_func = lambda alpha, a: a * D**2 / A3 * (0.25 * np.pi * np.sin(np.deg2rad(alpha)) + L_D * np.cos(np.deg2rad(alpha)))
+    # model_func = lambda x, a, b: a*x + b
+    # popt, _ = scipy.optimize.curve_fit(model_func, alpha, C_Dx_min_ReD)
+    # C_Dx_model = model_func(alpha_linspace, *popt)
+
+    C_Dy_model = 2 * np.pi * np.sin(np.deg2rad(alpha_linspace))
+
+    axs2[0].plot(alpha_linspace, C_Dx_model, '-', color='tab:green')
+    axs2[1].plot(alpha_linspace, C_Dy_model, '-', color='tab:green')
+
     for ax in axs2:
         ax.set_xlabel(r"$ \alpha $ (deg)")
         ax.grid('major')
+
+    model_line = mlines.Line2D([], [], linestyle='-', color="tab:green")
+
+    axs2[0].legend(handles=[model_line], labels=["Model"])
     axs2[1].legend(title='Mean $ Re $', labels=leg_labels2)
 
 
 
 fig1.set_constrained_layout(True)
-fig2.tight_layout()
+fig2.set_constrained_layout(True)
 
 fig1.savefig("Figures/Exp_drag_coef_vs_ReD.pdf")
 fig2.savefig("Figures/Exp_drag_coef_vs_alpha.pdf")
