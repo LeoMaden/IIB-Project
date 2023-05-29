@@ -105,15 +105,15 @@ M_total_arr = np.array([res.M_total for res in results])
 M_prop_arr = np.array([res.M_prop for res in results])
 M_bat_arr = np.array([res.M_bat for res in results])
 
-M_payload_rel = M_payload_arr / M_total_arr
-M_prop_rel = M_prop_arr / M_total_arr
-M_bat_rel = M_bat_arr / M_total_arr
+M_payload_rel = M_payload_arr #/ M_total_arr
+M_prop_rel = M_prop_arr #/ M_total_arr
+M_bat_rel = M_bat_arr #/ M_total_arr
 
-stack = np.vstack([M_payload_rel, M_prop_rel, M_bat_rel])
+stack = np.vstack([M_bat_rel, M_prop_rel, M_payload_rel])
 
 ax2.stackplot(M_payload_arr, stack)
 
-ax2.legend([r"$ M_{payload}/M_{tot} $", r"$ M_{prop}/M_{tot} $", r"$ M_{bat}/M_{tot} $"])
+ax2.legend([r"$ \widetilde M_{bat} $", r"$ \widetilde M_{prop} $", r"$ \widetilde M_{payload} $"], loc='lower right')
 ax2.set_xlabel(r"$ \widetilde M_{payload} $")
 ax2.grid('major')
 
@@ -122,6 +122,8 @@ fig2.set_constrained_layout(True)
 
 fig1.savefig("Figures/Optimise_vs_payload_params_ESDU.pdf")
 fig2.savefig("Figures/Optimise_vs_payload_mass_ESDU.pdf")
+# fig1.savefig("Figures/Optimise_vs_payload_params_both.pdf")
+# fig2.savefig("Figures/Optimise_vs_payload_mass_both.pdf")
 
 plt.show()
 
