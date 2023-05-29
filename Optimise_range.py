@@ -54,7 +54,7 @@ eta = 0.9
 phi = 0.7
 
 # Payload mass
-M_payload = 100
+M_payload = 10
 
 # Diffuser Cpr and L/h func
 def diffuser_Cpr_Lh_func(sigma):
@@ -67,8 +67,8 @@ def diffuser_Cpr_Lh_func(sigma):
 
 
 # sigma, alpha, FrU
-x0 = [1.2, 10, 30]
-bounds = [(1, 3), (0, 50), (0, 70)]
+x0 = [1.2, 20, 30]
+bounds = [(1, 3), (0, 50), (0, 60)]
 
 optimise.diffuser_Cpr_Lh_func = diffuser_Cpr_Lh_func
 res = optimise.optimise(x0, bounds, geom, mass_params, M_payload, phi, eta)
@@ -79,6 +79,9 @@ for param, val in res.__dict__.items():
 
     print(f"{param} = {val}")
 
+print(f"M_payload/M_total (%) = {100*M_payload/res.M_total}")
+print(f"M_bat/M_total (%) = {100*res.M_bat/res.M_total}")
+
 
 fig, ax = plt.subplots(figsize=(10, 8))
 ax.plot(res.s_conv / res.s_conv[-1])
@@ -87,5 +90,13 @@ ax.plot(res.alpha_conv / res.alpha_conv[-1])
 ax.plot(res.FrU_conv / res.FrU_conv[-1])
 ax.grid()
 ax.legend([r"$ \widetilde s $", r"$ \sigma $", r"$ \alpha $", r"$ Fr_U $"])
+ax.set_xlabel("Number of iterations")
+ax.set_ylabel(r"$ \dfrac{( \ )}{( \ )_{opt}} $", rotation=0, labelpad=20)
+ax.set_title(r"$ M_{payload} = " + str(M_payload) + r" $")
+fig.set_constrained_layout(True)
+
+response = input("Save file? (y/n): ")
+if response == "y":
+    fig.savefig(f"Figures/Optimise_conv_Mpl{M_payload}_both.pdf")
 
 plt.show()
