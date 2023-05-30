@@ -34,7 +34,7 @@ fig1, ax1 = plt.subplots(figsize=(10, 8))
 labels1 = []
 handles1 = []
 
-fit_func = lambda x, a, b: a - b*x**2
+fit_func = lambda x, a, b, c, d: a + b*x + c*x**2 + d*x**3
 
 for i, alpha_i in enumerate(alpha):
     # if alpha_i != 20: continue
