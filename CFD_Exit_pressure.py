@@ -11,11 +11,17 @@ rpm = [22000]
 # Air viscosity
 mu = 1.81e-5
 
-# Geometry
+# Design params
 D = 0.16
+hub_tip = 0.35
+phi_des = 0.7
+
+Rc = D / 2
+Rh = Rc * hub_tip
+Rmean = 0.5 * (Rc + Rh)
 
 # Setup plot
-fig, ax = plt.subplots(figsize=(10, 7))
+fig, ax = plt.subplots(figsize=(10, 8))
 labels = []
 markers = ['x', 'o']
 colors = list(mcolors.TABLEAU_COLORS.keys())
@@ -41,7 +47,8 @@ for i, rpm_i in enumerate(rpm):
     Pe = data["P"][:, :, i_e]
 
     # Plotting setup
-    labels += [fr"{rpm_i}, ${alpha_j}^\circ $" for alpha_j in alpha]
+    # labels += [fr"{rpm_i}, ${alpha_j}^\circ $" for alpha_j in alpha]
+    labels += [fr"${alpha_j}^\circ $" for alpha_j in alpha]
 
     # Calculate pressure coefficient
     Cp = (Pe - P1) / (0.5 * rho * V**2)
@@ -49,33 +56,56 @@ for i, rpm_i in enumerate(rpm):
     # Calculate Reynolds number
     ReD = rho * V * D / mu
 
+    # Blade Reynolds number
+    U = 2 * np.pi * Rmean * rpm_i / 60
+    ReU = np.mean(rho) * U * D / mu
+
+    J = V / U
+
     for j, alpha_j in enumerate(alpha):
         V_j = V[:, j]
+        J_j = J[:, j]
         ReD_j = ReD[:, j]
         Cp_j = Cp[:, j]
-        ax.loglog(ReD_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
+
+        # ax.loglog(ReD_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
+        ax.loglog(J_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
 
     # Trendline
     fit_func = lambda x, a, b: a/(x**b)
 
-    ReD_flat = ReD.flatten()
-    Cp_flat = Cp.flatten()  
-    i_valid = np.isfinite(ReD_flat) & np.isfinite(Cp_flat)
+    # ReD_flat = ReD.flatten()
+    J_flat = J.flatten()
 
-    fit_params, _ = scipy.optimize.curve_fit(fit_func, ReD_flat[i_valid], Cp_flat[i_valid])
-    print(fit_params)
+    Cp_flat = Cp.flatten()
 
-    ReD_fit = np.linspace(min(ReD_flat[i_valid]), (max(ReD_flat[i_valid])), 100)
-    Cp_fit = fit_func(ReD_fit, *fit_params)
+    # i_valid = np.isfinite(ReD_flat) & np.isfinite(Cp_flat) 
+    i_valid = np.isfinite(J_flat) & np.isfinite(Cp_flat) 
 
-    ax.loglog(ReD_fit, Cp_fit, 'k-')
+    # ReD_fit_params, _ = scipy.optimize.curve_fit(fit_func, ReD_flat[i_valid], Cp_flat[i_valid])
+    J_fit_params, _ = scipy.optimize.curve_fit(fit_func, J_flat[i_valid], Cp_flat[i_valid])
+
+    # ReD_fit = np.linspace(min(ReD_flat[i_valid]), (max(ReD_flat[i_valid])), 100)
+    J_fit = np.linspace(min(J_flat[i_valid]), (max(J_flat[i_valid])), 100)
+
+    # Cp_fit = fit_func(ReD_fit, *ReD_fit_params)
+    Cp_fit = fit_func(J_fit, *J_fit_params)
+
+    # ax.loglog(ReD_fit, Cp_fit, 'k-')
+    ax.loglog(J_fit, Cp_fit, 'k-')
 
 
 # ax.set_ylim(-30, 30)
 ax.grid('major')
-ax.legend(labels, title=r"rpm, $ \alpha $", bbox_to_anchor=(1.05, 1), loc='upper left')
-ax.set_ylabel(r"$ \dfrac{P_e - P_1}{\frac{1}{2} \rho V^2} $", rotation=0, labelpad=30)
-ax.set_xlabel(r"$Re_D$")
+# ax.legend(labels, title=r"rpm, $ \alpha $", bbox_to_anchor=(1.05, 1), loc='upper left')
+ax.legend(labels, title=r"$ \alpha $")
+ax.set_ylabel(r"$ \dfrac{P_e - P_1}{\frac{1}{2} \rho V^2} $", rotation=0, labelpad=40)
+
+# ax.set_xlabel(r"$Re_D$")
+ax.set_xlabel(r"$J$")
+
+ax.set_title(f"$ Re_U = {ReU:.3g} $")
+
 fig.set_constrained_layout(True)
 fig.savefig("Figures/IPM5_CFD_exit_pressure.pdf")
 plt.show()
