@@ -44,9 +44,13 @@ for i, rpm_i in enumerate(rpm):
     V = data["V"][:, :, i_1]
     V3 = data["V"][:, :, i_3]
     U = 2 * np.pi * Rmean * rpm_i / 60
+    rho = data["ro"][:, :, i_1]
+    
+    ReU = np.mean(rho) * U * D / mu
 
     # Plotting setup
-    labels += [fr"{rpm_i}, ${alpha_j}^\circ $" for alpha_j in alpha]
+    # labels += [fr"{rpm_i}, ${alpha_j}^\circ $" for alpha_j in alpha]
+    labels += [fr"${alpha_j}^\circ $" for alpha_j in alpha]
 
     # Calculate flow coefficient
     phi = V3/U
@@ -71,11 +75,13 @@ legend = ax.legend(handles=[phi_des_line], labels=["Design $\phi$"], loc='lower 
 ax.add_artist(legend)
 ax.set_ylim(0, 1.1*phi_des)
 ax.set_xlim(left=0)
+ax.set_title(f"$ Re_U = {ReU:.3g}$")
 
 
 
 ax.grid('major')
-ax.legend(labels, title=r"rpm, $ \alpha $", bbox_to_anchor=(1, 1), loc='upper left')
+# ax.legend(labels, title=r"rpm, $ \alpha $", bbox_to_anchor=(1, 1), loc='upper left')
+ax.legend(labels, title=r"$ \alpha $")
 ax.set_ylabel(r"$ \phi $", rotation=0, labelpad=15)
 ax.set_xlabel(r"$J$")
 fig.set_constrained_layout(True)
