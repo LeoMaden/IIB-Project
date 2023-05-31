@@ -69,7 +69,7 @@ for i, rpm_i in enumerate(rpm):
         Cp_j = Cp[:, j]
 
         # ax.loglog(ReD_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
-        ax.loglog(J_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
+        ax.plot(1/J_j, Cp_j, marker=markers[i], linestyle='', color=colors[j])
 
     # Trendline
     fit_func = lambda x, a, b: a/(x**b)
@@ -92,7 +92,7 @@ for i, rpm_i in enumerate(rpm):
     Cp_fit = fit_func(J_fit, *J_fit_params)
 
     # ax.loglog(ReD_fit, Cp_fit, 'k-')
-    ax.loglog(J_fit, Cp_fit, 'k-')
+    ax.plot(1/J_fit, Cp_fit, 'k-')
 
 
 # ax.set_ylim(-30, 30)
@@ -102,7 +102,7 @@ ax.legend(labels, title=r"$ \alpha $")
 ax.set_ylabel(r"$ \dfrac{P_e - P_1}{\frac{1}{2} \rho V^2} $", rotation=0, labelpad=40)
 
 # ax.set_xlabel(r"$Re_D$")
-ax.set_xlabel(r"$J$")
+ax.set_xlabel(r"$1/J$")
 
 ax.set_title(f"$ Re_U = {ReU:.3g} $")
 
