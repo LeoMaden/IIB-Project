@@ -14,7 +14,8 @@ def calc_C_power(phi, psi):
     return phi * psi
 
 def calc_psi(phi, Cpr, J, eta):
-    a = phi**2 * (1 - Cpr) - J**2
+    Ypi = 0
+    a = phi**2 * (1 - Cpr) - J**2 * (1 - Ypi)
 
     return a / (2 * eta)
 
