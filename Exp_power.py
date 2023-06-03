@@ -34,10 +34,14 @@ fig1, ax1 = plt.subplots(figsize=(10, 8))
 labels1 = []
 handles1 = []
 
-fit_func = lambda x, a, b, c, d: a + b*x + c*x**2 + d*x**3
+fig2, ax2 = plt.subplots(figsize=(10, 8))
+labels2 = []
+handles2 = []
+
+fit_func = lambda x, a, b, c: a + b*x + c*x**2
 
 for i, alpha_i in enumerate(alpha):
-    # if alpha_i != 20: continue
+    if alpha_i not in [10, 40, 90]: continue
     # if alpha_i == 90: continue
 
     # Data for pwm speed 2: as current zero before that
@@ -60,6 +64,13 @@ for i, alpha_i in enumerate(alpha):
     handles1.append(mlines.Line2D([], [], linestyle='-', marker='x', color=colors[i]))
     labels1.append(fr"$ {alpha_i}^\circ $")
 
+
+    if alpha_i in [10, 40]:
+        h, = ax2.plot(_J, _C_Wdotx, ':', color=colors[i])
+        handles2.append(h)    
+        labels2.append(fr"$ \alpha = {alpha_i}^\circ $")
+
+
 # Plot model
 phi = 0.6
 sigma = 1.3
@@ -80,4 +91,34 @@ ax1.set_ylabel(r"$ C_{\dot W_x} $", rotation=0, labelpad=20)
 ax1.grid('major')
 fig1.set_constrained_layout(True)
 fig1.savefig("Figures/Exp_power.pdf")
+
+
+# Add legend for experimental data
+# fig2.add_artist(ax2.legend(handles2, labels1, title=r"$ \alpha $", loc='upper right', ncols=2))
+
+# Old and new model plot
+new_colors = ['fuchsia', 'lime']
+new_colors = ['tab:purple', 'tab:orange']
+Ypi = [1.1, 1.2]
+# labels2 = []
+# handles2 = []
+
+for color, Ypi_i in zip(new_colors, Ypi):
+    C_Wdotx_new_model1 = phi / (2 * eta) * (phi**2 * (1 - Cpr) - _J**2 * (1-Ypi_i))
+    h, = ax2.plot(_J, C_Wdotx_new_model1, color=color, linewidth=2)
+    handles2.append(h)
+    labels2.append("$ Y_{p,i} = " + str(Ypi_i) + "$")
+
+fig2.add_artist(ax2.legend(handles2, labels2))
+
+
+# ax2.set_ylim(bottom=0)
+ax2.set_xlabel(r"$ J $")
+ax2.set_ylabel(r"$ C_{\dot W_x} $", rotation=0, labelpad=20)
+ax2.grid('major')
+fig2.set_constrained_layout(True)
+
+fig2.savefig("Figures/Exp_power_new_model.pdf")
+
+
 plt.show()
